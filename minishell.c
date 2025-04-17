@@ -6,7 +6,7 @@
 /*   By: strodrig <strodrig@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 18:25:52 by strodrig          #+#    #+#             */
-/*   Updated: 2025/04/10 16:17:27 by strodrig         ###   ########.fr       */
+/*   Updated: 2025/04/17 13:18:54 by strodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,6 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		if (lexer() == 1 || syntax_error() == 1)
-			free_all();
+			free_att();
 	}
 }

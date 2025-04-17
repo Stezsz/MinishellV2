@@ -12,18 +12,11 @@
 
 #include "minishell.h"
 
-/**
- * add_token - Adiciona um novo token à lista de tokens do shell.
- * @start: Índice inicial da substring na linha de comando.
- * @len: Comprimento da substring que será usada como valor do token.
- * @type: Tipo do token (definido pelo enum t_type).
- *
- * Esta função cria um novo token, inicializa seus valores e o adiciona
- * ao final da lista de tokens do shell. Caso a alocação de memória falhe,
- * a função imprime uma mensagem de erro, libera todos os recursos e encerra
- * o programa.
- */
-void	add_token(int start, int len, t_type type)
+/*
+** allocates new token with instruction from paramethers and adds
+** it to the end to shell->tokens list, which is returned by get_shell().
+*/
+void	add_token(int start, int len, t_token_type type)
 {
 	t_shell_state	*shell;
 	t_token		*new_token;
@@ -32,12 +25,12 @@ void	add_token(int start, int len, t_type type)
 	new_token = ft_calloc(1, sizeof(t_token));
 	if (!new_token)
 	{
-		ft_putstr_fd("Error: Memory allocation failed\n", 2); // [ADD] adicionar função
-		free_all();
+		ft_putstr_fd("Error: Memory allocation failed\n", 2);
+		free_att();
 		exit(1);
 	}
 	new_token->type = type;
-	new_token->str = ft_substr(shell->readline, start, len);
+	new_token->content = ft_substr(shell->input_line, start, len);
 	new_token->next = NULL;
 	new_token->prev = tokenlast(shell->tokens);
 	if (new_token->prev)
@@ -46,13 +39,9 @@ void	add_token(int start, int len, t_type type)
 		shell->tokens = new_token;
 }
 
-/**
- * tokenlast - Retorna o último token de uma lista de tokens.
- * @lst: Ponteiro para o início da lista de tokens.
- *
- * Esta função percorre a lista de tokens até encontrar o último elemento
- * e retorna um ponteiro para ele. Se a lista estiver vazia, retorna NULL.
- */
+/*
+** return last node of that t_token list.
+*/
 t_token	*tokenlast(t_token *lst)
 {
 	t_token	*last;

@@ -4,7 +4,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
-FILES = minishell
+FILES = $(shell find . -type f -name '*.c' | sed 's|^\./||;s|\.c$$||')
 
 SRC		= $(FILES:=.c)
 OBJ		= $(FILES:=.o)

@@ -16,3 +16,10 @@ lexer.c
 
 [READY]	-	Arquivos prontos
 tokens.c
+lexer.c
+skips.c
+tokens.c
+before_lexer.c
+free_att.c
+
+continuar do expander
