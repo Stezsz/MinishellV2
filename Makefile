@@ -1,15 +1,17 @@
 NAME = minishell
+LIBFT = libft/libft.a
+LIBFT_DIR = libft
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 
-FILES = $(shell find . -type f -name '*.c' | sed 's|^\./||;s|\.c$$||')
+FILES = $(shell find . -type f -name '*.c' | sed 's|^\./||;s|\.c$$||') #[ADD] path normal
 
 SRC		= $(FILES:=.c)
 OBJ		= $(FILES:=.o)
 HEADER = includes/minishell.h
-INCLUDES	= -I includes
+INCLUDES	= -I includes -I $(LIBFT_DIR)
 LDFLAGS	+= -lreadline # leite: no meu pc dá se usar isto-> LDFLAGS	+= -L/usr/lib -ledit
 
 #Colors:
@@ -24,14 +26,22 @@ ifeq ($(DEBUG), 1)
 	OPTS = -g
 endif
 
-.PHONY: all clean fclean re norm
+.PHONY: all clean fclean re norm libft
 
-all: $(NAME)
+all: libft $(NAME)
 
-$(NAME):  $(OBJ) $(HEADER)
+libft:
+	@printf "$(CURSIVE)$(GRAY) 	- Making libft... $(RESET)\n"
+	@$(MAKE) -C $(LIBFT_DIR)
+	@printf "$(GREEN)    - Libft ready.\n$(RESET)"
+
+$(NAME): $(LIBFT) $(OBJ) $(HEADER)
 	@printf "$(CURSIVE)$(GRAY) 	- Compiling $(NAME)... $(RESET)\n"
-	@ $(CC) $(OBJ) $(INCLUDES) $(LDFLAGS) $(OPTS) -o $(NAME)
+	@ $(CC) $(OBJ) $(INCLUDES) $(LDFLAGS) $(OPTS) $(LIBFT) -o $(NAME)
 	@printf "$(GREEN)    - Executable ready.\n$(RESET)"
+
+$(LIBFT):
+	@$(MAKE) -C $(LIBFT_DIR)
 
 %.o: %.c $(HEADER)
 	@printf "$(CURSIVE)$(GRAY) 	- Making object file $(notdir $@) from source file $(notdir $<) ... $(RESET)\n"
@@ -41,6 +51,7 @@ clean:
 	@ $(RM) $(OBJ)
 	@printf "$(CURSIVE)$(GRAY)	- Removing object files ... $(RESET)\n"
 	@printf "$(YELLOW)    - Object files removed.$(RESET)\n"
+	@$(MAKE) -C $(LIBFT_DIR) clean
 
 norm:
 	@printf "$(CURSIVE)$(GRAY)"
@@ -51,5 +62,6 @@ fclean: clean
 	@ $(RM) $(NAME)
 	@printf "$(CURSIVE)$(GRAY)	- Removing $(NAME)... $(RESET)\n"
 	@printf "$(YELLOW)    - Executable removed.$(RESET)\n"
+	@$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all

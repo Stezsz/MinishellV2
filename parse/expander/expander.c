@@ -16,66 +16,66 @@
  * Processes quoted content and handles expansions within quotes
  * Updates the string with expanded content when necessary
  */
-void	expand_quote(int *i, char **update, char *src, char quote_char)
-{
-	int	len;
+ void	expand_quote(int *i, char **update, char *src, char quote_char)
+ {
+	 int	len;
 
-	len = 0;
-	while (src && src[++len])
-	{
-		if (quote_char == '\'')
-		{
-			if (src[len] == '\'')
-				break ;
-			update_str(update, src, len, 1);
-		}
-		if (quote_char == '\"')
-		{
-			if (src[len] == '$' && src[len + 1] != '\"')
-				process_dollar(&len, src + len, update);
-			else if (src[len] == '$' && src[len + 1] == '\"')
-				update_str(update, src, len++, 1);
-			if (src[len] != '\"')
-				update_str(update, src, len, 1);
-			else if (src[len] == '\"')
-				break ;
-		}
-	}
-	*i += len;
-}
+	 len = 0;
+	 while (src && src[++len])
+	 {
+		 if (quote_char == '\'')
+		 {
+			 if (src[len] == '\'')
+				 break ;
+			 update_str(update, src, len, 1);
+		 }
+		 if (quote_char == '\"')
+		 {
+			 if (src[len] == '$' && src[len + 1] != '\"')
+				 process_dollar(&len, src + len, update);
+			 else if (src[len] == '$' && src[len + 1] == '\"')
+				 update_str(update, src, len++, 1);
+			 if (src[len] != '\"')
+				 update_str(update, src, len, 1);
+			 else if (src[len] == '\"')
+				 break ;
+		 }
+	 }
+	 *i += len;
+ }
 
 /**
  * Processes a token and performs expansions on its content
  * Handles quotes and environment variables
  */
-void	expand_node(t_token **tmp, char	*update)
-{
-	int	i;
+ void	expand_node(t_token **tmp, char	*update)
+ {
+	 int	i;
 
-	i = 0;
-	while ((*tmp)->content && (*tmp)->content[i])
-	{
-		if ((*tmp)->content[i] == '\'' || (*tmp)->content[i] == '\"')
-		{
-			(*tmp)->type = TOKEN_QUOTE;
-			expand_quote(&i, &update, (*tmp)->content + i, (*tmp)->content[i]);
-			i++;
-		}
-		else if ((*tmp)->content[i] == '$')
-		{
-			(*tmp)->type = TOKEN_DOLLAR;
-			process_dollar(&i, (*tmp)->content + i, &update);
-		}
-		else
-			update_str(&update, (*tmp)->content, i++, 1);
-	}
-	if ((*tmp)->content)
-		free((*tmp)->content);
-	if (update)
-		(*tmp)->content = update;
-	else
-		(*tmp)->content = NULL;
-}
+	 i = 0;
+	 while ((*tmp)->content && (*tmp)->content[i])
+	 {
+		 if ((*tmp)->content[i] == '\'' || (*tmp)->content[i] == '\"')
+		 {
+			 (*tmp)->type = TOKEN_QUOTE;
+			 expand_quote(&i, &update, (*tmp)->content + i, (*tmp)->content[i]);
+			 i++;
+		 }
+		 else if ((*tmp)->content[i] == '$')
+		 {
+			 (*tmp)->type = TOKEN_DOLLAR;
+			 process_dollar(&i, (*tmp)->content + i, &update);
+		 }
+		 else
+			 update_str(&update, (*tmp)->content, i++, 1);
+	 }
+	 if ((*tmp)->content)
+		 free((*tmp)->content);
+	 if (update)
+		 (*tmp)->content = update;
+	 else
+		 (*tmp)->content = NULL;
+ }
 
 /**
  * Main expander function that processes all tokens

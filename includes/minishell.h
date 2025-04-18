@@ -6,7 +6,7 @@
 /*   By: strodrig <strodrig@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 18:27:15 by strodrig          #+#    #+#             */
-/*   Updated: 2025/04/17 14:06:34 by strodrig         ###   ########.fr       */
+/*   Updated: 2025/04/18 21:43:05 by strodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,7 @@
 # include <sys/types.h>
 # include <fcntl.h>
 # include <signal.h>
-
-typedef struct s_list
-{
-	char			*content;
-	struct s_list	*next;
-}	t_list;
+# include "libft.h"
 
 typedef enum e_token_type
 {
@@ -123,14 +118,39 @@ t_token	*tokenlast(t_token *lst);
 void	expand_quote(int *i, char **update, char *src, char quote_char);
 void	expand_node(t_token **tmp, char	*update);
 void	expander(void);
-/* ----- utils.c ----- */
-void	update_str(char **str, char *src, int index, int mode);
-void	process_dollar(int *i, char *str, char **update);
+/* ----- expander2.c ----- */
+size_t	safe_strlen(const char *str);
+char	*ms_strjoin(const char *s1, const char *s2);
+void	restore_empty_str(void);
 void	clear_empty_token(void);
+void	update_str(char **update, char *src, int start, int len);
+/* ----- process_dollar.c ----- */
+char	*get_value(char *var_name);
+void	exit_status_expander(char **update);
+void	expand_standard_dollar(int *len, char *src, char **update);
+void	process_dollar(int *len, char *src, char **update);
+/* ----- here_expander.c ----- */
+void	here_expander(char **line);
 
 /* ----- before_lexer.c ----- */
 t_shell_state	*get_shell(void);
 void			check_main_args(int ac);
+
+/* ----- array_build/ ----- */
+/* ----- redirs.c ----- */
+void            assign_redirs(t_token *token, t_redirection ***redirs);
+t_redirection   **get_redirections(t_token *token);
+
+/* ----- init_cmd.c ----- */
+t_command       *get_next_command(t_token *token);
+void            get_next_cmd_token(t_token **token);
+int             count_commands(t_token *tokens);
+int             init_commands(void);
+
+/* ----- args.c ----- */
+int             is_argument(t_token *token);
+void            assign_arguments(t_token *tokens, char ***args);
+void            get_command_args(t_token *token, t_command *cmd);
 
 /* ----- libft functions ----- */
 void	*ft_calloc(size_t count, size_t size);
